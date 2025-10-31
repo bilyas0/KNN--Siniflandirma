@@ -1,63 +1,132 @@
-Sıfırdan KNN Sınıflandırıcı (KNN Classifier from Scratch)
-Bu proje, K-En Yakın Komşuluk (KNN) algoritmasının NumPy kütüphanesi kullanılarak sıfırdan uygulanmasını içermektedir. Geliştirilen sınıflandırıcı, scikit-learn kütüphanesinden yüklenen MNIST el yazısı rakamları veri setini tanımak amacıyla eğitilmiş ve test edilmiştir.
+🧠 KNN (K-Nearest Neighbors) Görüntü Sınıflandırma Projesi
 
-Projenin temel amacı, KNN algoritmasının iç mekaniklerini anlamak ve model performansını etkileyen k değeri ve mesafe metrikleri gibi hiperparametrelerin etkisini analiz etmektir.
+Bu proje, K-En Yakın Komşuluk (KNN) algoritmasını sıfırdan (NumPy ile) geliştirip,
+Scikit-learn versiyonu ile performans karşılaştırması yapar.
+MNIST benzeri el yazısı rakamları (Digits) veri seti kullanılmıştır.
 
-Örnek: k=3 ve L2 mesafesi için oluşturulan karmaşıklık matrisi.
+📂 Proje Yapısı
+📁 KNN_Project
+├── knn_classifier.py          # KNN algoritmasının sıfırdan yazıldığı Python sınıfı
+├── main.py                    # Ana dosya (veri yükleme, model eğitimi, test, karşılaştırma)
+├── visualization.py            # Tüm görselleştirmeleri içeren yardımcı modül
+├── results/                    # Sonuç dosyalarının kaydedildiği klasör
+│   ├── accuracy.txt
+│   ├── confusion_matrix.png
+│   ├── sample_predictions.png
+│   ├── k_value_analysis.png
+│   ├── distance_comparison.png
+│   └── comparison_table.png
+└── README.md                   # Bu belge
 
-Projenin Özellikleri
-Sıfırdan Uygulama: Çekirdek algoritma, scikit-learn gibi hazır kütüphanelere dayanmadan, fit, predict ve score metotları ile kendi KNNClassifier sınıfımızda geliştirilmiştir.
+⚙️ Kurulum
 
-Parametre Değerlendirmesi: Modelin doğruluğu üzerinde kritik etkiye sahip olan farklı parametreler sistematik olarak değerlendirilmiştir:
+Gerekli kütüphaneleri yükleyin:
 
-K Değeri Analizi: Model, k (komşu sayısı) için [1, 3, 5, 7, 9, 11, 15, 21] gibi farklı değerlerle test edilerek en uygun komşu sayısı araştırılmıştır.
+pip install numpy matplotlib seaborn scikit-learn
 
-Mesafe Metriği Karşılaştırması: L1 (Manhattan) ve L2 (Euclidean) mesafe metriklerinin performansı karşılaştırılmış ve sonuçlar analiz edilmiştir.
+🚀 Çalıştırma
 
-Scikit-learn ile Karşılaştırma: Kendi yazdığımız sınıflandırıcının performansı, scikit-learn kütüphanesinin standart KNeighborsClassifier'ı ile karşılaştırılarak kendi uygulamamızın doğruluğu teyit edilmiştir.
+Projeyi terminalden başlatın:
 
-Detaylı Görselleştirme: Analiz sonuçlarını daha anlaşılır kılmak için karmaşıklık matrisi (confusion matrix), örnek tahmin görselleri ve parametre analiz grafikleri gibi görselleştirmeler kullanılmıştır.
+python main.py
 
-Proje Yapısı
-Odev_Knn/
-|
-|------ knn_classifier.py         # Sıfırdan geliştirilen KNN sınıfını içerir
-|------ main_notebook.py          # Tüm deneylerin, analizlerin ve yorumların yapıldığı ana Jupyter Notebook dosyası
-|------ visualization.py          # Sonuçları görselleştirmek için kullanılan fonksiyonları barındırır
-|------ experiments.py            # Modelin test edilmesi için basit bir script
-|------ README.md                 # Bu dosya
-|
-|------ results/                  # Modelin çalıştırılmasıyla üretilen tüm çıktıların (grafikler, metinler) kaydedildiği klasör
-|       |------ confusion_matrix.png
-|       |------ k_value_analysis.png
-|       |------ sample_predictions.png
-|       |------ comparison_table.png
-|       |------ accuracy.txt
-Gereksinimler
-Projeyi çalıştırmak için aşağıdaki Python kütüphanelerine ihtiyacınız vardır:
 
-numpy
+Program:
 
-matplotlib
+Digits veri setini yükler (sklearn.datasets.load_digits()),
 
-scikit-learn
+Kendi yazdığınız KNNClassifier sınıfını (k=3, L2) eğitir,
 
-seaborn
+Tahminleri yapar ve doğruluğu hesaplar,
 
-Bu kütüphaneleri pip ile kolayca yükleyebilirsiniz:
+Sonuçları results/ klasörüne kaydeder.
 
-Bash
+🧩 KNNClassifier (knn_classifier.py)
+🔹 Önemli Metotlar
+Metot	Açıklama
+fit(X, y)	Eğitim verilerini saklar
+compute_distances(X)	Test ve eğitim örnekleri arasındaki mesafeleri hesaplar
+predict(X)	En yakın k komşuya göre tahmin yapar
+score(X, y)	Model doğruluğunu hesaplar
+🔹 Mesafe Hesaplama Mantığı
+diffs = X[:, np.newaxis, :] - self.X_train[np.newaxis, :, :]
 
-pip install numpy scikit-learn matplotlib seaborn
-Kullanım
-Tüm adımları, kod açıklamalarını ve çıktıları görmek için main_notebook.py dosyasını bir Jupyter Notebook veya Jupyter Lab ortamında açın ve hücreleri sırasıyla çalıştırın.
 
-Veri Yükleme ve Hazırlama: MNIST veri setini yükler ve eğitim/test olarak böler.
+Bu satır, her test örneği ile tüm eğitim örnekleri arasındaki farkları tek seferde hesaplar.
+NumPy broadcasting kullanılır → (n_test, n_train, n_features) boyutlu fark matrisi oluşturulur.
 
-Model Eğitimi ve Test: Kendi KNNClassifier sınıfımızı kullanarak modeli eğitir ve test eder.
+🎨 Görselleştirmeler (visualization.py)
 
-Parametre Analizi: Farklı k değerleri ve mesafe metrikleri için testler yapar ve sonuçları görselleştirir.
+Bu dosya, modelin performansını anlamak ve raporlamak için görseller oluşturur.
 
-Sklearn Karşılaştırması: Kendi modelimizin sonuçlarını scikit-learn ile karşılaştırır.
+🔹 1. Confusion Matrix
+plot_confusion_matrix(y_test, y_pred, class_names)
 
-Tüm görsel çıktılar ve analiz sonuçları otomatik olarak results/ klasörüne kaydedilecektir.
+
+Gerçek ve tahmin edilen etiketleri karşılaştırır
+
+Renk yoğunluğu doğru–yanlış tahmin oranını gösterir
+
+Kaydedilen dosya: results/confusion_matrix.png
+
+🔹 2. Örnek Tahmin Görselleri
+plot_sample_predictions(X_test, y_test, y_pred)
+
+
+10 rastgele test örneği gösterir
+
+Doğru tahminler yeşil, yanlışlar kırmızı
+
+Kaydedilen dosya: results/sample_predictions.png
+
+🔹 3. K Değeri Analizi
+plot_k_analysis(k_values, accuracies)
+
+
+Farklı k değerlerinin doğruluğa etkisini gösterir
+
+En iyi k kırmızı noktayla belirtilir
+
+Kaydedilen dosya: results/k_value_analysis.png
+
+🔹 4. L1 – L2 Mesafe Karşılaştırması
+plot_distance_comparison(k_values, l1_accuracies, l2_accuracies)
+
+
+Manhattan (L1) ve Öklid (L2) metriklerini kıyaslar
+
+Kaydedilen dosya: results/distance_comparison.png
+
+🔹 5. Karşılaştırma Tablosu
+create_comparison_table(k_values, l1_accuracies, l2_accuracies)
+
+
+Her k değeri için L1 ve L2 doğruluklarını tablo olarak gösterir
+
+Farkları (L2 - L1) sütununda görüntüler
+
+Kaydedilen dosya: results/comparison_table.png
+
+📊 Elde Edilen Sonuçlar
+Deney	Açıklama	Doğruluk
+k=3, L2	Temel model	~0.98
+k=7, L2	En iyi doğruluk	~0.985
+L1 vs L2	Karşılaştırma	L2 genelde daha iyi
+sklearn karşılaştırması	KNeighborsClassifier ile	Neredeyse aynı
+🧠 Öğrenilenler
+
+K değeri seçimi, modelin başarısını doğrudan etkiler.
+
+L2 (Euclidean) mesafesi genelde daha stabil sonuç verir.
+
+KNN eğitimde hızlı, ama tahminde yavaş bir algoritmadır.
+
+visualization.py ile sonuçların analizi ve raporlaması kolaylaşır.
+
+🏁 Sonuç
+
+Bu proje, KNN algoritmasını derinlemesine anlamak,
+NumPy ile sıfırdan uygulamak,
+ve scikit-learn sürümüyle kıyaslamak için güçlü bir örnektir.
+
+Tüm grafikler, tablolar ve doğruluk sonuçları results/ klasöründe toplanır.
